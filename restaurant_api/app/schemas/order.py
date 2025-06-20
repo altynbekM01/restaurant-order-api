@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List
 from uuid import UUID
 from datetime import datetime
@@ -18,5 +18,8 @@ class OrderRead(OrderBase):
     dishes: List[DishRead]
     total_price: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+class OrderStatusUpdate(BaseModel):
+    status: OrderStatus
+    model_config = ConfigDict(from_attributes=True)

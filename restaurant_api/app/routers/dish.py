@@ -1,27 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from uuid import UUID
-from app.database import SessionLocal
 from app.models import dish as model
 from app.schemas import dish as schema
+from app.dependencies.db import get_db
+from app.services import crud
 
 router = APIRouter()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/", response_model=schema.DishRead)
 def create_dish(dish: schema.DishCreate, db: Session = Depends(get_db)):
-    db_dish = model.Dish(**dish.dict())
-    db.add(db_dish)
-    db.commit()
-    db.refresh(db_dish)
-    return db_dish
+    return crud.create_object(db, model.Dish, dish.model_dump())
 
 @router.get("/", response_model=list[schema.DishRead])
 def list_dishes(db: Session = Depends(get_db)):
-    return db.query(model.Dish).all()
+    return crud.list_objects(db, model.Dish)
+
+@router.get("/{dish_id}", response_model=schema.DishRead)
+def get_dish(dish_id: str, db: Session = Depends(get_db)):
+    return crud.get_object_or_404(db, model.Dish, dish_id)
+
+@router.delete("/{dish_id}", status_code=204)
+def delete_dish(dish_id: str, db: Session = Depends(get_db)):
+    crud.delete_object(db, model.Dish, dish_id)
