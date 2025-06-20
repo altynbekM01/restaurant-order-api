@@ -41,7 +41,7 @@ REST API-сервис позволяет:
 
 ## 🚀 Запуск
 
-1. СКлонируйте репозиторий:
+1. Склонируйте репозиторий:
    ```bash
    git clone https://github.com/your-username/restaurant-api.git
    cd restaurant-api
@@ -59,7 +59,7 @@ REST API-сервис позволяет:
     ```
     docker-compose up --build -d
 
-4.  Проведие миграции:
+4.  Проведите миграции:
     ```
     docker-compose exec web alembic revision --autogenerate -m "init tables"
     docker-compose exec web alembic upgrade head
